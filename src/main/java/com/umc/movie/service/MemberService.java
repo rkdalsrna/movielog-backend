@@ -1,14 +1,13 @@
 // src/main/java/com/umc/movie/service/MemberService.java
 package com.umc.movie.service;
 
-import com.umc.movie.dto.EmailCheckResponse;
-import com.umc.movie.dto.NicknameCheckResponse;
+import com.umc.movie.dto.*;
+import com.umc.movie.exception.ApiException;
 import com.umc.movie.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.umc.movie.dto.MemberResponse;
-import com.umc.movie.dto.SignUpRequest;
 import com.umc.movie.entity.Member;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -54,5 +53,14 @@ public class MemberService {
                 savedMember.getEmail(),
                 savedMember.getNickname()
         );
+    }
+
+    // src/main/java/com/umc/movie/service/MemberService.java 에 아래 메서드를 추가합니다
+    public MemberInfoResponse getMyInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "MEMBER404_1",
+                        "해당 회원을 찾을 수 없습니다."));
+
+        return MemberInfoResponse.from(member);
     }
 }
